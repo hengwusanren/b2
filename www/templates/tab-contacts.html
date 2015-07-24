@@ -1,0 +1,17 @@
+<ion-view view-title="Contacts">
+  <ion-content>
+    <div style="text-align: center; padding: 16px;"><button class="button" ng-click="getContacts()">Get My Contacts</button></div>
+    <ion-list>
+      <ion-item class="item-remove-animate item-avatar item-icon-right" ng-repeat="contact in phoneContacts" type="item-text-wrap" href="#/tab/contacts/{{contact.id}}">
+        <img ng-src="{{contact.photos[0].value}}">
+        <h2>{{contact.displayName}}</h2>
+        <p>{{contact.phones[0].value}}</p>
+        <i class="icon ion-chevron-right icon-accessory"></i>
+
+        <ion-option-button class="button-assertive" ng-click="remove(contact)">
+          Delete
+        </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
