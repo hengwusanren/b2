@@ -1,89 +1,21 @@
 angular.module('starter.services', [])
 
-.service("ContactsService", ['$q', function($q) { // not used yet.
-
-  var formatContact = function(contact) {
-
-    return {
-      "displayName": contact.name.formatted || contact.name.givenName + " " + contact.name.familyName || "Mystery Person",
-      "emails": contact.emails || [],
-      "phones": contact.phoneNumbers || [],
-      "photos": contact.photos || []
-    };
-
-  };
-
-  var pickContact = function() {
-
-    var deferred = $q.defer();
-
-    if (navigator && navigator.contacts) {
-
-      navigator.contacts.pickContact(function(contact) {
-
-        deferred.resolve(formatContact(contact));
-      });
-
-    } else {
-      deferred.reject("Bummer.  No contacts in desktop browser");
-    }
-
-    return deferred.promise;
-  };
-
+.factory('LocalData', ['$window', function($window) {
   return {
-    pickContact: pickContact
-  };
+    set: function(key, value) {
+      $window.localStorage[key] = value;
+    },
+    get: function(key, defaultValue) {
+      return $window.localStorage[key] || defaultValue;
+    },
+    setObject: function(key, value) {
+      $window.localStorage[key] = JSON.stringify(value);
+    },
+    getObject: function(key) {
+      return JSON.parse($window.localStorage[key] || '{}');
+    }
+  }
 }])
-
-.factory('Contacts', function() {
-  // Might use a resource here that returns a JSON array
-
-  // Some fake testing data
-  var chats = [{
-    id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png'
-  }, {
-    id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'https://avatars3.githubusercontent.com/u/11214?v=3&s=460'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'https://pbs.twimg.com/profile_images/479090794058379264/84TKj_qa.jpeg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'https://pbs.twimg.com/profile_images/598205061232103424/3j5HUXMY.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'https://pbs.twimg.com/profile_images/578237281384841216/R3ae1n61.png'
-  }];
-
-  return {
-    all: function() {
-      return chats;
-    },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
-    },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
-        }
-      }
-      return null;
-    }
-  };
-})
 
 .factory('Chats', function() {
   // Might use a resource here that returns a JSON array
@@ -132,4 +64,54 @@ angular.module('starter.services', [])
       return null;
     }
   };
-});
+})
+
+.factory("Contacts", ['$q', 'LocalData', function($q, LocalData) {
+  
+  helper.log('this is Contacts.'); // <-- log
+
+  var contacts = [];
+
+  if(LocalData.get('contacts')) {
+    contacts = LocalData.getObject('contacts'); // <-- localStorage
+  }
+
+  return {
+    find: function() {
+      if(contacts.length > 0) return contacts; // if localStorage has contacts, return them.
+
+      var deferred = $q.defer(); // asynchronous
+      var options = new ContactFindOptions();
+      options.multiple = true;
+      var fields = ["id", "name", "displayName", "photos", "phoneNumbers"];
+
+      navigator.contacts.find(fields,
+        function(allcontacts) {
+          contacts = allcontacts;
+
+          //helper.log(JSON.stringify(contacts), 1); // <-- log
+
+          deferred.resolve(allcontacts);
+        }, //onsuccess
+        function(error) {
+          deferred.reject(error);
+        }, // onerror
+        options);
+      return deferred.promise;
+    },
+    all: function() {
+      return contacts;
+    },
+    remove: function(contact) {
+      contacts.splice(contacts.indexOf(contact), 1);
+    },
+    get: function(contactId) {
+      for (var i = 0; i < contacts.length; i++) {
+        if (contacts[i].id == contactId) {
+          return contacts[i];
+        }
+      }
+      return null;
+    }
+  };
+}]);

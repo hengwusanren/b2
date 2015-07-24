@@ -1,6 +1,10 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {})
+.controller('DashCtrl', function($scope) {
+
+  helper.log('this is DashCtrl.'); // <-- log
+
+})
 
 .controller('ChatsCtrl', function($scope, Chats) {
   // With the new view caching in Ionic, Controllers are only called
@@ -21,52 +25,62 @@ angular.module('starter.controllers', [])
   $scope.chat = Chats.get($stateParams.chatId);
 })
 
+.controller('ContactsCtrl', ['$scope', 'LocalData', 'Contacts', '$ionicPlatform', function($scope, LocalData, Contacts, $ionicPlatform) {
+
+  helper.log('this is ContactsCtrl.'); // <-- log
+
+  if(LocalData.get('contacts')) {
+
+    helper.log('get contacts from localStorage.'); // <-- log
+    helper.log(LocalData.get('contacts')); // <-- log
+
+    $scope.contacts = LocalData.getObject('contacts'); // <-- localStorage
+
+  } else {
+    $ionicPlatform.ready(function() {
+      $scope.findContact = function() {
+        Contacts.find().then(function(contacts) {
+          $arr = [];
+          var contactCountLimit = 20;
+          var contactCount = contacts.length > contactCountLimit ? contactCountLimit : contacts.length;
+          for (var i = 0; i < contactCount; i++) {
+            $arr.push({
+              id: contacts[i].id,
+              name: contacts[i].name.formatted,
+              displayName: contacts[i].displayName,
+              photo: (contacts[i].photos && contacts[i].photos.length > 0) ? contacts[i].photos[0].value : '',
+              phone: contacts[i].phoneNumbers[0].value
+            })
+          }
+          $scope.contacts = $arr;
+
+          helper.log(JSON.stringify($scope.contacts), 1); // <-- log
+          helper.log('set contacts into localStorage.'); // <-- log
+
+          LocalData.setObject('contacts', $scope.contacts); // <-- localStorage
+
+        });
+      };
+
+      $scope.findContact();
+
+    });
+  }
+
+}])
+
+.controller('ContactDetailCtrl', function($scope, $stateParams, Contacts) {
+
+  helper.log('this is ContactDetailCtrl.'); // <-- log
+
+  $scope.contact = Contacts.get($stateParams.contactId);
+})
+
 .controller('AccountCtrl', function($scope) {
+
+  helper.log('this is AccountCtrl.'); // <-- log
+
   $scope.settings = {
     enableFriends: true
   };
-})
-
-.controller('ContactsCtrl', ['$scope', 'ContactsService', function($scope, ContactsService) {
-
-  /*
-  $scope.data = {
-    selectedContacts: []
-  };
-
-  $scope.pickContact = function() {
-
-    ContactsService.pickContact().then(
-      function(contact) {
-        $scope.data.selectedContacts.push(contact);
-        console.log("Selected contacts=");
-        console.log($scope.data.selectedContacts);
-
-      },
-      function(failure) {
-        console.log("Bummer.  Failed to pick a contact");
-      }
-    );
-
-  }
-  */
-
-  $scope.getContacts = function() {
-    $scope.phoneContacts = [];
-
-    function onSuccess(contacts) {
-      for (var i = 0; i < contacts.length; i++) {
-        var contact = contacts[i];
-        $scope.phoneContacts.push(contact);
-      }
-    };
-
-    function onError(contactError) {
-      alert(contactError);
-    };
-    var options = {};
-    options.multiple = true;
-    $cordovaContacts.find(options).then(onSuccess, onError);
-  };
-
-}]);
+});
