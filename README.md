@@ -34,5 +34,5 @@ for instance, we enable Android platform:
 
 given that an Android device is connected, come in the app folder, build and run:
 
-`$ ionic build android`
-`$ ionic run android`
+`$ ionic build android
+$ ionic run android`
