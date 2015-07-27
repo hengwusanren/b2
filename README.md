@@ -32,7 +32,8 @@ for instance, we enable Android platform:
 
 ### build and run
 
-given that an Android device is connected, come in the app folder, build and run:
+given that an Android device is connected (which is strongly suggested instead of a emulator), come in the app folder, build and run:
 
-`$ ionic build android
-$ ionic run android`
+`$ ionic build android`
+
+`$ ionic run android`
