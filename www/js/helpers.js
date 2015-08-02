@@ -8,6 +8,8 @@ var helper = {
 		line.innerHTML = text;
 		if(!type || type < 0 || type >= this.logColors.length) type = 0;
 		line.style.color =  this.logColors[type];
-		document.getElementById('debug').appendChild(line);
+		var debugWindow = document.getElementById('debug');
+		debugWindow.style.display = 'block';
+		debugWindow.appendChild(line);
 	}
 };

@@ -1,86 +1,79 @@
 angular.module('starter.controllers', [])
 
-.controller('DashCtrl', function($scope) {
+.controller('MindsCtrl', function($scope) {
 
-  helper.log('this is DashCtrl.'); // <-- log
+  helper.log('this is MindsCtrl.'); // <-- log
 
 })
 
-.controller('ChatsCtrl', function($scope, Chats) {
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+.controller('BindsCtrl', ['$scope', 'LocalData', 'Binds', '$ionicPlatform', function($scope, LocalData, Binds, $ionicPlatform) {
 
-  $scope.chats = Chats.all();
-  $scope.remove = function(chat) {
-    Chats.remove(chat);
-  };
-})
+  helper.log('this is BindsCtrl.'); // <-- log
 
-.controller('ChatDetailCtrl', function($scope, $stateParams, Chats) {
-  $scope.chat = Chats.get($stateParams.chatId);
-})
+  if(LocalData.get('binds')) {
 
-.controller('ContactsCtrl', ['$scope', 'LocalData', 'Contacts', '$ionicPlatform', function($scope, LocalData, Contacts, $ionicPlatform) {
+    helper.log('get binds from localStorage.'); // <-- log
+    helper.log(LocalData.get('binds')); // <-- log
 
-  helper.log('this is ContactsCtrl.'); // <-- log
-
-  if(LocalData.get('contacts')) {
-
-    helper.log('get contacts from localStorage.'); // <-- log
-    helper.log(LocalData.get('contacts')); // <-- log
-
-    $scope.contacts = LocalData.getObject('contacts'); // <-- localStorage
+    $arr = [];
+    var localBinds = LocalData.getObject('binds');
+    for(var i in localBinds) {
+      if(localBinds[i].photo == '') continue;
+      $arr.push(localBinds[i]);
+    }
+    $scope.binds = $arr; // <-- localStorage
 
   } else {
     $ionicPlatform.ready(function() {
-      $scope.findContact = function() {
-        Contacts.find().then(function(contacts) {
+      $scope.findBind = function() {
+        Binds.find().then(function(binds) {
+
+          helper.log('find, then:'); // <-- log
+
           $arr = [];
-          var contactCountLimit = 20;
-          var contactCount = contacts.length > contactCountLimit ? contactCountLimit : contacts.length;
-          for (var i = 0; i < contactCount; i++) {
+          var bindCountLimit = 100;
+          var bindCount = binds.length > bindCountLimit ? bindCountLimit : binds.length;
+          for (var i = 0; i < bindCount; i++) {
+            var photoUrl = (binds[i].photos && binds[i].photos.length > 0) ? binds[i].photos[0].value : '';
+            if(photoUrl == '') continue;
             $arr.push({
-              id: contacts[i].id,
-              name: contacts[i].name.formatted,
-              displayName: contacts[i].displayName,
-              photo: (contacts[i].photos && contacts[i].photos.length > 0) ? contacts[i].photos[0].value : '',
-              phone: contacts[i].phoneNumbers[0].value
+              id: binds[i].id,
+              name: binds[i].name.formatted,
+              displayName: binds[i].displayName,
+              photo: (binds[i].photos && binds[i].photos.length > 0) ? binds[i].photos[0].value : '',
+              phone: binds[i].phoneNumbers[0].value
             })
           }
-          $scope.contacts = $arr;
+          $scope.binds = $arr;
 
-          helper.log(JSON.stringify($scope.contacts), 1); // <-- log
-          helper.log('set contacts into localStorage.'); // <-- log
+          helper.log(JSON.stringify($scope.binds), 1); // <-- log
+          helper.log('set binds into localStorage.'); // <-- log
 
-          LocalData.setObject('contacts', $scope.contacts); // <-- localStorage
+          LocalData.setObject('binds', $scope.binds); // <-- localStorage
 
         });
       };
 
-      $scope.findContact();
+      $scope.findBind();
 
     });
   }
 
 }])
 
-.controller('ContactDetailCtrl', function($scope, $stateParams, Contacts) {
+.controller('BindDetailCtrl', function($scope, $stateParams, Binds) {
 
-  helper.log('this is ContactDetailCtrl.'); // <-- log
+  helper.log('this is BindDetailCtrl.'); // <-- log
 
-  $scope.contact = Contacts.get($stateParams.contactId);
+  $scope.bindInstance = Binds.get($stateParams.bindId);
 })
 
-.controller('AccountCtrl', function($scope) {
+.controller('FindsCtrl', ['$scope', 'LocalData', 'Finds', function($scope, LocalData, Finds) {
 
-  helper.log('this is AccountCtrl.'); // <-- log
+  helper.log('this is FindsCtrl.'); // <-- log
 
   $scope.settings = {
-    enableFriends: true
+    enableBinds: true
   };
-});
+  $scope.finds = Finds.all();
+}]);

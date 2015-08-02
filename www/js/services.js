@@ -13,52 +13,42 @@ angular.module('starter.services', [])
     },
     getObject: function(key) {
       return JSON.parse($window.localStorage[key] || '{}');
+    },
+    remove: function(key) {
+      $window.localStorage.removeItem(key);
     }
   }
 }])
 
-.factory('Chats', function() {
+.factory('Finds', function($sce) {
   // Might use a resource here that returns a JSON array
 
   // Some fake testing data
-  var chats = [{
+  var finds = [{
     id: 0,
-    name: 'Ben Sparrow',
-    lastText: 'You on your way?',
-    face: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png'
+    ownerName: 'Ben Sparrow',
+    ownerPhoto: 'https://pbs.twimg.com/profile_images/514549811765211136/9SgAuHeY.png',
+    displayTime: '1 day ago',
+    content: $sce.trustAsHtml('<img class="full-image" src="img/postimg.jpg"><p>Erupting volcanoes can pose many hazards, not only in the immediate vicinity of the eruption.</p>')
   }, {
     id: 1,
-    name: 'Max Lynx',
-    lastText: 'Hey, it\'s me',
-    face: 'https://avatars3.githubusercontent.com/u/11214?v=3&s=460'
-  }, {
-    id: 2,
-    name: 'Adam Bradleyson',
-    lastText: 'I should buy a boat',
-    face: 'https://pbs.twimg.com/profile_images/479090794058379264/84TKj_qa.jpeg'
-  }, {
-    id: 3,
-    name: 'Perry Governor',
-    lastText: 'Look at my mukluks!',
-    face: 'https://pbs.twimg.com/profile_images/598205061232103424/3j5HUXMY.png'
-  }, {
-    id: 4,
-    name: 'Mike Harrington',
-    lastText: 'This is wicked good ice cream.',
-    face: 'https://pbs.twimg.com/profile_images/578237281384841216/R3ae1n61.png'
+    ownerName: 'Anthony',
+    ownerPhoto: 'http://tp2.sinaimg.cn/1669395577/180/5729521328/1',
+    displayTime: 'July 20, 2015',
+    content: $sce.trustAsHtml('<p>This is a "Facebook" styled Card. The header is created from a Thumbnail List item, the content is from a card-body consisting of an image and paragraph text. The footer consists of tabs, icons aligned left, within the card-footer.</p>')
   }];
 
   return {
     all: function() {
-      return chats;
+      return finds;
     },
-    remove: function(chat) {
-      chats.splice(chats.indexOf(chat), 1);
+    remove: function(find) {
+      finds.splice(finds.indexOf(find), 1);
     },
-    get: function(chatId) {
-      for (var i = 0; i < chats.length; i++) {
-        if (chats[i].id === parseInt(chatId)) {
-          return chats[i];
+    get: function(findId) {
+      for (var i = 0; i < finds.length; i++) {
+        if (finds[i].id === parseInt(findId)) {
+          return finds[i];
         }
       }
       return null;
@@ -66,19 +56,20 @@ angular.module('starter.services', [])
   };
 })
 
-.factory("Contacts", ['$q', 'LocalData', function($q, LocalData) {
+.factory("Binds", ['$q', 'LocalData', function($q, LocalData) {
   
-  helper.log('this is Contacts.'); // <-- log
+  helper.log('this is Binds.'); // <-- log
 
-  var contacts = [];
+  var binds = [];
 
-  if(LocalData.get('contacts')) {
-    contacts = LocalData.getObject('contacts'); // <-- localStorage
+  if(LocalData.get('binds')) {
+    binds = LocalData.getObject('binds'); // <-- localStorage
+    //LocalData.remove('binds');
   }
 
   return {
     find: function() {
-      if(contacts.length > 0) return contacts; // if localStorage has contacts, return them.
+      if(binds.length > 0) return binds; // if localStorage has binds, return them.
 
       var deferred = $q.defer(); // asynchronous
       var options = new ContactFindOptions();
@@ -86,13 +77,13 @@ angular.module('starter.services', [])
       var fields = ["id", "name", "displayName", "photos", "phoneNumbers"];
 
       navigator.contacts.find(fields,
-        function(allcontacts) {
-          contacts = allcontacts;
+        function(allbinds) {
+          binds = allbinds;
 
-          //helper.log(JSON.stringify(contacts), 1); // <-- log
+          helper.log(JSON.stringify(binds), 1); // <-- log
 
-          deferred.resolve(allcontacts);
-        }, //onsuccess
+          deferred.resolve(allbinds);
+        }, // onsuccess
         function(error) {
           deferred.reject(error);
         }, // onerror
@@ -100,15 +91,18 @@ angular.module('starter.services', [])
       return deferred.promise;
     },
     all: function() {
-      return contacts;
+      return binds;
     },
-    remove: function(contact) {
-      contacts.splice(contacts.indexOf(contact), 1);
+    remove: function(binds) {
+      binds.splice(binds.indexOf(bind), 1);
     },
-    get: function(contactId) {
-      for (var i = 0; i < contacts.length; i++) {
-        if (contacts[i].id == contactId) {
-          return contacts[i];
+    get: function(bindId) {
+      if(binds.length == 0 && LocalData.get('binds')) {
+        binds = LocalData.getObject('binds'); // <-- localStorage
+      }
+      for (var i = 0; i < binds.length; i++) {
+        if (binds[i].id == bindId) {
+          return binds[i];
         }
       }
       return null;
