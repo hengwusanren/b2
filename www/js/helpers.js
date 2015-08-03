@@ -3,6 +3,9 @@ var helper = {
 	logColors: ['white', 'green', 'blue', 'red'],
 	log: function(text, type) {
 		if(!this.logEnabled) return;
+		if(!document.getElementById('debug')) return;
+		if(document.getElementById('debug').getElementsByTagName('div').length >= 256)
+			document.getElementById('debug').innerHTML = '';
 
 		var line = document.createElement('div');
 		line.innerHTML = text;
