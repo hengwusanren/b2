@@ -32,7 +32,7 @@ angular.module('starter', ['ionic', 'ngSanitize', 'starter.controllers', 'starte
   $stateProvider
 
   // setup an abstract state for the tabs directive
-    .state('tab', {
+  .state('tab', {
     url: '/tab',
     abstract: true,
     templateUrl: 'templates/tabs.html'

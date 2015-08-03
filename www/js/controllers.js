@@ -1,10 +1,11 @@
 angular.module('starter.controllers', [])
 
-.controller('MindsCtrl', function($scope) {
+.controller('MindsCtrl', ['$scope', 'LocalData', 'Finds', function($scope, LocalData, Minds) {
 
   helper.log('this is MindsCtrl.'); // <-- log
 
-})
+  $scope.minds = Minds.all();
+}])
 
 .controller('BindsCtrl', ['$scope', 'LocalData', 'Binds', '$ionicPlatform', function($scope, LocalData, Binds, $ionicPlatform) {
 

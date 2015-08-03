@@ -20,6 +20,42 @@ angular.module('starter.services', [])
   }
 }])
 
+.factory('Minds', function($sce) {
+  // Might use a resource here that returns a JSON array
+
+  // Some fake testing data
+  var minds = [{
+    id: 0,
+    ownerName: 'Ke Shen',
+    ownerPhoto: 'http://tp2.sinaimg.cn/1669395577/180/5729521328/1',
+    displayTime: 'July 28, 2015',
+    content: $sce.trustAsHtml('<p>B2 or 2b, this is a question... Everyone has some individual sides. So let\'s record them, give them to AI. We will also get something and somebody interesting.</p>')
+  }, {
+    id: 1,
+    ownerName: 'Ke Shen',
+    ownerPhoto: 'http://tp2.sinaimg.cn/1669395577/180/5729521328/1',
+    displayTime: 'July 25, 2015',
+    content: $sce.trustAsHtml('<p>I design and develop B2 because: I like to record a mind which is much smaller than a blog but of more value than a “friend-circle” to myself. I don’t like twitter/weibo because social network is not my point. I just wish to concentrate on man’s mind, thoughts, and interests, little of any serious business but much of my life.</p>')
+  }];
+
+  return {
+    all: function() {
+      return minds;
+    },
+    remove: function(mind) {
+      minds.splice(minds.indexOf(mind), 1);
+    },
+    get: function(mindId) {
+      for (var i = 0; i < minds.length; i++) {
+        if (minds[i].id === parseInt(mindId)) {
+          return minds[i];
+        }
+      }
+      return null;
+    }
+  };
+})
+
 .factory('Finds', function($sce) {
   // Might use a resource here that returns a JSON array
 
