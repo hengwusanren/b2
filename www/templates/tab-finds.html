@@ -1,0 +1,41 @@
+<ion-view view-title="Finds">
+  <ion-content>
+    <ion-list>
+
+
+      <ion-item class="list card" ng-repeat="find in finds" type="item-text-wrap">
+        <div class="item item-avatar">
+          <img ng-src="{{find.ownerPhoto}}">
+          <h2>{{find.ownerName}}</h2>
+          <p>{{find.displayTime}}</p>
+        </div>
+
+        <div class="item item-body" ng-bind-html="find.content"></div>
+
+        <div class="item tabs tabs-secondary tabs-icon-left">
+          <a class="tab-item" href="#">
+            <i class="icon ion-pull-request"></i>
+            Pull
+          </a>
+          <a class="tab-item" href="#">
+            <i class="icon ion-reply"></i>
+            Bind
+          </a>
+        </div>
+      </ion-item>
+
+
+    </ion-list>
+
+    <div class="bar bar-footer item-input-inset">
+      <label class="item-input-wrapper">
+        <i class="icon ion-ios-search placeholder-icon"></i>
+        <input type="search" placeholder="Search">
+      </label>
+      <button class="button button-clear">
+        Cancel
+      </button>
+    </div>
+
+  </ion-content>
+</ion-view>
