@@ -1,9 +1,8 @@
 <ion-view view-title="Minds">
   <ion-content>
-    <ion-list>
 
 
-      <ion-item class="list card" ng-repeat="mind in minds" type="item-text-wrap">
+      <div class="list card mycard" ng-repeat="mind in minds" type="item-text-wrap">
         <div class="item">
           <p>{{mind.displayTime}}</p>
         </div>
@@ -24,9 +23,8 @@
             Bind
           </a>
         </div>
-      </ion-item>
+      </div>
 
 
-    </ion-list>
   </ion-content>
 </ion-view>
